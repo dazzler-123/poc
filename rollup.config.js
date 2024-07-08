@@ -4,6 +4,7 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
+import postcss from 'rollup-plugin-postcss';
 
 export default {
   input: 'src/index.js',
@@ -21,14 +22,24 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    resolve({
+      extensions: ['.js', '.jsx',],
+    }),
    
     babel({
       babelHelpers: 'bundled',
+      extensions: ['.js', '.jsx',],
       exclude: 'node_modules/**',
-      presets: ['@babel/preset-env', '@babel/preset-react'],
+      presets: [
+        '@babel/preset-env',
+        '@babel/preset-react',
+      ],
     }),
     commonjs(),
-    terser(), // Optional: Minifies the output
+    postcss({
+      extract: true,
+      minimize: true,
+    }),
+    terser(),
   ],
 };
